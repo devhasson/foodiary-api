@@ -16,6 +16,8 @@ custom:
   cognito:
     PoolName: ${self:service}-${self:provider.stage}-UserPool
     ClientName: ${self:service}-${self:provider.stage}-UserPoolClient
+  dynamoDb:
+    MainTable: ${self:service}-${self:provider.stage}-MainTable
 
 build:
   esbuild:
@@ -23,6 +25,7 @@ build:
 
 resources:
   - ${file(./sls/resources/UserPool.yml)}
+  - ${file(./sls/resources/MainTable.yml)}
 
 functions:
   - ${file(./sls/functions/auth.yml)}
