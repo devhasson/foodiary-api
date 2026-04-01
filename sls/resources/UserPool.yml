@@ -1,0 +1,38 @@
+Resources:
+  UserPool:
+        Type: AWS::Cognito::UserPool
+        Properties:
+          UserPoolName: ${self:custom.cognito.PoolName}
+          DeletionProtection: ACTIVE
+          MfaConfiguration: OFF
+          AutoVerifiedAttributes:
+            - email
+          AdminCreateUserConfig:
+            AllowAdminCreateUserOnly: false
+          UsernameAttributes:
+            - email
+          AccountRecoverySetting:
+            RecoveryMechanisms:
+              - Name: verified_email
+                Priority: 1
+          Policies:
+            PasswordPolicy:
+              MinimumLength: 8
+              RequireUppercase: false
+              RequireLowercase: false
+              RequireNumbers: false
+              RequireSymbols: false
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: ${self:custom.cognito.ClientName}
+      UserPoolId: !Ref UserPool
+      GenerateSecret: true
+      ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
+      TokenValidityUnits:
+        AccessToken: hours
+      AccessTokenValidity: 12
+      RefreshTokenRotation:
+        Feature: ENABLED
+        RetryGracePeriodoSeconds: 0
