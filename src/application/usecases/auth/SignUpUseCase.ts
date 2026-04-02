@@ -1,14 +1,31 @@
+import { Account } from "@application/entities/Account";
+import { EmailAlreadyInUse } from "@application/errors/application/EmailAlreadyInUse";
+import { AccountRepository } from "@infra/database/dynamo/repositories/AccountRepository";
 import { AuthGateway } from "@infra/gateways/AuthGateway";
 import { Injectable } from "@kernel/decorators/Injectable";
 
 @Injectable()
 export class SignUpUseCase {
-  constructor(private readonly authGateway: AuthGateway) { }
+  constructor(
+    private readonly authGateway: AuthGateway,
+    private readonly accountRepository: AccountRepository
+  ) { }
 
   async execute(input: SignUpUseCase.Input): Promise<SignUpUseCase.Output> {
+    const existingAccount = await this.accountRepository.findByEmail(input.email);
+
+    if (existingAccount) {
+      throw new EmailAlreadyInUse();
+    }
+
     const { externalId } = await this.authGateway.signUp(input);
 
-    // TODO: Create a new user in the database with the externalId and input data
+    const account = new Account({
+      email: input.email,
+      externalId,
+    })
+
+    await this.accountRepository.create(account);
 
     const { accessToken, refreshToken } = await this.authGateway.signIn(input);
 
