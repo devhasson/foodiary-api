@@ -1,4 +1,7 @@
 export enum ErrorCode {
+  // Application Errors
+  EMAIL_ALREADY_IN_USE = "EMAIL_ALREADY_IN_USE",
+
   VALIDATION_ERROR = "VALIDATION_ERROR",
 
   // HTTP Errors
