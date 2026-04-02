@@ -28,7 +28,7 @@ export class AccountRepository {
       KeyConditionExpression: "#GSI1PK = :GSI1PK AND #GSI1SK = :GSI1SK",
       ExpressionAttributeNames: {
         "#GSI1PK": "GSI1PK",
-        "GSI1SK": "GSI1SK",
+        "#GSI1SK": "GSI1SK",
       },
       ExpressionAttributeValues: {
         ":GSI1PK": AccountItem.getGSI1PK(email),
